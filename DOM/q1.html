@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <button>Say Hello</button>
+    <button>One more button</button>
+
+    <script>
+
+        // Question 1 : On clicking button append hello to page
+
+        let btn=document.querySelector("button");
+
+        btn.addEventListener("click",function(){
+
+            // it creates an element in DOM
+            let pElem=document.createElement("p"); 
+            pElem.innerText="Hello";
+            // <p>Hello</p>
+
+            let body=document.querySelector("body");
+            body.appendChild(pElem);
+        })
+
+    </script>
+
+</body>
+</html>
