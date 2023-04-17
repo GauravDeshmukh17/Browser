@@ -5,6 +5,7 @@
 body{
     margin:0;
     padding:0;
+    font-family:Arial, Helvetica, sans-serif;
 }
 
 .toolbox-cont{
@@ -130,6 +131,8 @@ textarea{
 .ticket-id{
     height: 2rem;
     background-color: red;
+    color: white;
+    font-weight: bolder;
 }
 
 .text-area{
@@ -137,8 +140,10 @@ textarea{
     font-size: 2rem;
     outline: none;
     overflow-wrap: break-word;
+    font-weight: bold;
 }
 
 .main-cont{
-    display: none;
+    display: flex;
+    flex-wrap: wrap;
 }

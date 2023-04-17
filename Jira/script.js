@@ -68,13 +68,13 @@ modalCont.addEventListener('keydown',function(e){
 // function which creates ticket
 function createTicket(ticketColor,data,ticketId){
     let id=ticketId || uid();
-    console.log(ticketId);
-    console.log(id);
+    // console.log(ticketId);
+    // console.log(id);
     divElement=document.createElement("div");
     divElement.setAttribute('class','ticket-cont');
     divElement.innerHTML=`
         <div class="ticket-color ${ticketColor}"></div>
-        <div class="ticket-id"></div>
+        <div class="ticket-id">${id}</div>
         <div class="text-area">${data}</div>
     `;
 
@@ -97,7 +97,6 @@ function createTicket(ticketColor,data,ticketId){
 // let removebtn=document.querySelector(".remove-btn");
 // let ticketCont=document.querySelectorAll(".ticket-cont");
 // console.log(ticketCont);
-
 // let isRemoveButtonClicked=false;
 // removebtn.addEventListener("click",function(){
 //     console.log(isRemoveButtonClicked);
@@ -107,7 +106,6 @@ function createTicket(ticketColor,data,ticketId){
 //                 ticketElem.style.display="none";
 //             })
 //         })
-
 //         isRemoveButtonClicked=true;
 //     }
 //     else{
@@ -115,9 +113,11 @@ function createTicket(ticketColor,data,ticketId){
 //     }
 // })
 
+
 // new id creation
 // console.log(uid());
 
+// store previous tickets and display them with newly added tickets
 if(localStorage.getItem("tickets")){
     ticketsArr=JSON.parse(localStorage.getItem("tickets"));
     // console.log(ticketsArr);
@@ -125,6 +125,68 @@ if(localStorage.getItem("tickets")){
         createTicket(ticketsArrObj.ticketColor,ticketsArrObj.data,ticketsArrObj.ticketId);
     })
 }
+
+// clicked on particular color in navbar then respective color tickets will appear
+let color=document.querySelectorAll(".color");
+color.forEach(function(colorElem){
+
+    colorElem.addEventListener("click",function(){
+        let colorName=colorElem.classList[0];
+        // console.log(colorName);
+
+        // filtering tickets
+        let filteredTicketsArr=ticketsArr.filter(function(ticketObj){
+            return colorName == ticketObj.ticketColor;
+        })
+        // console.log(filteredTicketsArr);
+
+        // remove tickets
+        let ticketCont=document.querySelectorAll(".ticket-cont");
+        for(let i=0;i<ticketCont.length;i++){
+            ticketCont[i].remove();
+        }
+
+        // display filtered tickets
+        filteredTicketsArr.forEach(function(ticketObj){
+            createTicket(ticketObj.ticketColor,ticketObj.data,ticketObj.ticketId);
+        })
+
+    })
+
+
+    // display all tickets while double clicked on color
+    colorElem.addEventListener("dblclick",function(){
+        // remove tickets
+        let ticketCont=document.querySelectorAll(".ticket-cont");
+        for(let i=0;i<ticketCont.length;i++){
+            ticketCont[i].remove();
+        }
+
+        // display all tickets
+        ticketsArr.forEach(function(ticketObj){
+            createTicket(ticketObj.ticketColor,ticketObj.data,ticketObj.ticketId);
+        })
+    })
+
+})
+
+// delete ticket when double clicked on cross button
+let removebtn=document.querySelector(".remove-btn");
+
+removebtn.addEventListener("dblclick",function(){
+    removebtn.style.color="black";
+    
+    let ticketCont=document.querySelectorAll(".ticket-cont");
+    for(let i=0;i<ticketCont.length;i++){
+        ticketCont[i].addEventListener("click",function(){
+            ticketCont[i].remove();
+        })
+    }
+})
+
+
+
+
 
 
 
