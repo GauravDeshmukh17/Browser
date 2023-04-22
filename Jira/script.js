@@ -170,19 +170,66 @@ color.forEach(function(colorElem){
 
 })
 
-// delete ticket when double clicked on cross button
-let removebtn=document.querySelector(".remove-btn");
+// delete ticket when clicked on cross button
+// let removebtn=document.querySelector(".remove-btn");
+// removebtn.addEventListener("click",function(){
+//     removebtn.style.color="black";
+//     let ticketCont=document.querySelectorAll(".ticket-cont");
+//     for(let i=0;i<ticketCont.length;i++){
+//         ticketCont[i].addEventListener("click",function(){
+//             ticketCont[i].remove(); 
+//         })
+//     }
+// })
 
-removebtn.addEventListener("dblclick",function(){
-    removebtn.style.color="black";
-    
-    let ticketCont=document.querySelectorAll(".ticket-cont");
-    for(let i=0;i<ticketCont.length;i++){
-        ticketCont[i].addEventListener("click",function(){
-            ticketCont[i].remove();
-        })
+
+// click button becomes black and white
+let removebtn=document.querySelector(".remove-btn");
+let ticketCont=document.querySelectorAll(".ticket-cont");
+let isRemoveButtonClicked=false;
+removebtn.addEventListener("click",function(){
+    if(!isRemoveButtonClicked){
+        removebtn.style.color="black";
+        handleRemoval();
+        isRemoveButtonClicked=true;
+    }
+    else{
+        removebtn.style.color="white";
+        handleRemoval();
+        isRemoveButtonClicked=false;
     }
 })
+
+// add and remove event listener
+function handleRemoval(){
+    ticketCont.forEach(function(ticketObj){
+        if(!isRemoveButtonClicked){
+            ticketObj.addEventListener("click",ticketRemoval);
+        }
+        else{
+            ticketObj.removeEventListener("click",ticketRemoval);
+        }
+    })
+}
+
+// removes ticket from local storage and front-end  
+function ticketRemoval(e){
+    let requiredTicketId=e.currentTarget.innerText.split("\n")[0];
+    // console.log(requiredTicketId);
+    // let idx = ticketsArr.findIndex(x => x.ticketId === requiredTicketId);
+    let idx = ticketsArr.findIndex(function(x){
+        return x.ticketId === requiredTicketId;
+    });
+    console.log(idx);
+
+    // splice removes given index from array
+    ticketsArr.splice(idx,1);
+    console.log(ticketsArr);
+    localStorage.setItem("tickets",JSON.stringify(ticketsArr));
+    e.currentTarget.remove();
+}
+
+
 
 
 
