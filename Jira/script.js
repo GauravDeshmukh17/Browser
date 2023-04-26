@@ -8,6 +8,9 @@ let textAreaCont=document.querySelector('.textAreaCont');
 let mainCont=document.querySelector('.main-cont');
 
 let ticketsArr=[];
+let lockArr=[];
+
+let colorsArr=['lightpink','lightgreen','lightblue','black'];
 
 // to open close modal container
 let isModalPresent=false;
@@ -76,6 +79,7 @@ function createTicket(ticketColor,data,ticketId){
         <div class="ticket-color ${ticketColor}"></div>
         <div class="ticket-id">${id}</div>
         <div class="text-area">${data}</div>
+        <i class="fa-solid fa-lock ticket-icon"></i>
     `;
 
     mainCont.appendChild(divElement);
@@ -91,6 +95,8 @@ function createTicket(ticketColor,data,ticketId){
         // console.log(ticketsArr);
         localStorage.setItem("tickets",JSON.stringify(ticketsArr));
     }
+
+    lockArr.push(true);
 }
 
 // not working code 
@@ -166,6 +172,7 @@ color.forEach(function(colorElem){
         ticketsArr.forEach(function(ticketObj){
             createTicket(ticketObj.ticketColor,ticketObj.data,ticketObj.ticketId);
         })
+
     })
 
 })
@@ -189,11 +196,14 @@ let ticketCont=document.querySelectorAll(".ticket-cont");
 let isRemoveButtonClicked=false;
 removebtn.addEventListener("click",function(){
     if(!isRemoveButtonClicked){
+        // removebtn.style.backgroundColor="#485460";
+        // removebtn.style.borderRadius="1rem";
         removebtn.style.color="black";
         handleRemoval();
         isRemoveButtonClicked=true;
     }
     else{
+        // removebtn.style.backgroundColor="rgb(255, 47, 0)";
         removebtn.style.color="white";
         handleRemoval();
         isRemoveButtonClicked=false;
@@ -220,20 +230,74 @@ function ticketRemoval(e){
     let idx = ticketsArr.findIndex(function(x){
         return x.ticketId === requiredTicketId;
     });
-    console.log(idx);
+    // console.log(idx);
 
     // splice removes given index from array
     ticketsArr.splice(idx,1);
-    console.log(ticketsArr);
+    lockArr.splice(idx,1);
+    // console.log(ticketsArr);
     localStorage.setItem("tickets",JSON.stringify(ticketsArr));
     e.currentTarget.remove();
 }
 
 
+// lock and unlock ticket , if unlocked we can edit ticket else not
+let textArea=document.querySelectorAll(".text-area");
+// console.log(textArea);
+let ticketIcon=document.querySelectorAll(".ticket-icon");
+for(let i=0;i<ticketIcon.length;i++){
+    ticketIcon[i].addEventListener("click",function(){
+        if(lockArr[i]==true){
+            ticketIcon[i].classList.remove("fa-lock");
+            ticketIcon[i].classList.add("fa-lock-open");
+            textArea[i].setAttribute("contenteditable","true");
+            lockArr[i]=false;
+        }
+        else{
+            ticketIcon[i].classList.remove("fa-lock-open");
+            ticketIcon[i].classList.add("fa-lock");
+            textArea[i].setAttribute("contenteditable","false");     
+            lockArr[i]=true;       
+        }
+
+        // console.log(lockArr);
+    })
+}
 
 
+// 
+let ticketColor=document.querySelectorAll(".ticket-color");
+for(let i=0;i<ticketColor.length;i++){
+    let colorIdx=0;
+    ticketColor[i].addEventListener("click",function(){
+        // console.log(ticketColorObj);
+        if(colorIdx==4){
+            colorIdx=0;
+        }
+        let colorToBeRemoved=ticketColor[i].classList[1];
+        // console.log(colorToBeRemoved);
+        ticketColor[i].classList.remove(colorToBeRemoved);
+        ticketColor[i].classList.add(colorsArr[colorIdx]);
+        // console.log(colorIdx);
+        
+        // console.log(ticketCont);
+        let requiredTicketId=ticketCont[i].innerText.split("\n")[0];
+        // console.log(requiredTicketId);
+        let idx = ticketsArr.findIndex(function(ticketObj){
+            return ticketObj.ticketId === requiredTicketId;
+        });
+        // console.log(idx);
 
+        let dataToBeFilled=ticketsArr[idx].data;
+        let idToBeFilled=ticketsArr[idx].ticketId;
+        ticketsArr.splice(idx,1,{ticketColor:colorsArr[colorIdx],data:dataToBeFilled,ticketId:idToBeFilled});
+        console.log(ticketsArr);
+        
+        localStorage.setItem("tickets",JSON.stringify(ticketsArr));
 
+        colorIdx++;
+    })
+}
 
 
 
